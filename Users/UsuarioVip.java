@@ -3,15 +3,16 @@ package Users;
 import java.util.ArrayList;
 import java.util.List;
 
+import LoginStrategy.LoginModeVip;
 import Structs.PlayList;
 
 public class UsuarioVip extends Usuario
 {
 	private List<PlayList> playLists;
 	
-	public UsuarioVip()
+	public UsuarioVip(String nome, String login, String senha, int id)
 	{
-		super();
+		super(nome, login, senha, id, new LoginModeVip());
 		this.playLists = new ArrayList<>(); 
 	}
 	

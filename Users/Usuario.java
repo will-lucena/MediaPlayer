@@ -1,5 +1,7 @@
 package Users;
 
+import java.util.Random;
+
 import LoginStrategy.LoginModeAdm;
 import LoginStrategy.LoginModeStrategy;
 import MediaPlayer.MediaPlayer;
@@ -17,6 +19,7 @@ public abstract class Usuario
 		this.nome = "Administrador";
 		this.login = "admin";
 		this.senha = "admin";
+		//this.id = new Random().nextInt(999);
 		this.id = 0;
 		this.loginMode = new LoginModeAdm();
 	}
