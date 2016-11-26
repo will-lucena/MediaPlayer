@@ -30,8 +30,6 @@ public class UsersManager
 				sb.append("/");
 				sb.append(user.getNome());
 				sb.append("/");
-				sb.append(user.getId());
-				sb.append("/");
 				sb.append(user.getLoginMode().getMode());
 				
 				escrever.println(sb.toString());

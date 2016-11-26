@@ -18,7 +18,8 @@ public class DataBaseSingleton
 	{
 		if (bancoDeUsuarios == null)
 		{
-			return new DataBaseSingleton().bancoDeUsuarios;
+			new DataBaseSingleton();
+			return DataBaseSingleton.bancoDeUsuarios;
 		}
 		return bancoDeUsuarios;
 	}	
