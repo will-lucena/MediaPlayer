@@ -5,116 +5,143 @@ import Users.Usuario;
 public class Abb
 {
 	private NodeAbb raiz;
-	
+
 	public Abb()
 	{
-		this.raiz = new NodeAbb();
+		this.raiz = null;
 	}
-	
+
 	public NodeAbb getRaiz()
 	{
-		return raiz;
+		return this.raiz;
 	}
-	
-	public NodeAbb buscar(Usuario user)
+
+	public boolean buscar(Usuario user)
 	{
 		return this.buscar(this.raiz, user);
 	}
-	
-	private NodeAbb buscar(NodeAbb node, Usuario user)
+
+	private boolean buscar(NodeAbb node, Usuario user)
 	{
-		if (user.getId() == node.getChave())
+		if (node == null)
 		{
-			return node;
+			return false;
 		}
 		
+		if (user.getId() == node.getChave())
+		{
+			return true;
+		}
+
 		if (user.getId() > node.getChave())
 		{
 			return buscar(node.getDireita(), user);
 		}
-		
+
 		if (user.getId() < node.getChave())
 		{
 			return buscar(node.getEsquerda(), user);
 		}
 		
-		return null;
+		return false;
 	}
-	
+
 	public void inserir(Usuario user)
 	{
-		this.inserir(this.raiz, user);
+		if (this.raiz == null)
+		{
+			this.raiz = new NodeAbb();
+			this.raiz.setInfo(user);
+			this.raiz.setChave(user.getId());
+		}
+		else
+		{
+			inserir(this.raiz, user);			
+		}
 	}
-	
-	private void inserir(NodeAbb node, Usuario user)
+
+	private NodeAbb inserir(NodeAbb node, Usuario user)
 	{
 		if (node == null)
 		{
 			node = new NodeAbb(user);
+			return node;
 		}
-		
+
 		else if (user.getId() > node.getChave())
 		{
-			this.inserir(node.getDireita(), user);
+			node.setDireita(this.inserir(node.getDireita(), user));
 		}
-		
+
 		else if (user.getId() < node.getChave())
 		{
-			this.inserir(node.getEsquerda(), user);
+			node.setEsquerda(this.inserir(node.getEsquerda(), user));
 		}
+
+		return node;
 	}
-	
-	/* terminar de implementar
+
+	// * terminar de implementar
 	public void remover(Usuario user)
 	{
-		this.remover(this.raiz, user);
+		this.raiz = this.remover(this.raiz, user);
 	}
-	
+
 	private NodeAbb remover(NodeAbb node, Usuario user)
 	{
 		if (user.getId() == node.getChave())
 		{
-			
+			node = this.removerCaso1(node);
+			return node;
 		}
-		
-		if (user.getId() > node.getChave())
+
+		else if (user.getId() > node.getChave())
 		{
-			return this.remover(node.getDireita(), user);
+			node.setDireita(this.remover(node.getDireita(), user));
 		}
-		
-		if (user.getId() < node.getChave())
+
+		else if (user.getId() < node.getChave())
 		{
-			return this.remover(node.getEsquerda(), user);
+			node.setEsquerda(this.remover(node.getEsquerda(), user));
 		}
 		
-		return null;
+		return node;
 	}
-	
-	private void removerCaso1(NodeAbb node)
+
+	private NodeAbb removerCaso1(NodeAbb node)
 	{
 		if (node.getEsquerda() == null)
 		{
-			node = node.getDireita();
+			return node = node.getDireita();
 		}
-		
+
 		else if (node.getDireita() == null)
 		{
-			node = node.getEsquerda();
+			return node = node.getEsquerda();
 		}
-		
+
 		else
 		{
-			node = this.removerCaso2(node.getEsquerda());
+			
+			return removerCaso2(node);
 		}
 	}
-	
+
 	private NodeAbb removerCaso2(NodeAbb node)
+	{
+		NodeAbb sucessor = buscarSucessor(node.getEsquerda());
+		remover(sucessor.getInfo());
+		node.setChave(sucessor.getChave());
+		node.setInfo(sucessor.getInfo());
+		return node;
+	}
+	
+	private NodeAbb buscarSucessor(NodeAbb node)
 	{
 		if (node.getDireita() != null)
 		{
-			return node.getDireita();
+			return buscarSucessor(node.getDireita());
 		}
-		
 		return node;
 	}
 	/**/

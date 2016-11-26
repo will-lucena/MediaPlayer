@@ -12,8 +12,8 @@ public class NodeAbb
 	
 	protected NodeAbb()
 	{
-		this.info = new UsuarioAdm();
-		this.chave = this.info.getId();
+		this.info = null;
+		this.chave = 0;
 		this.esquerda = null;
 		this.direita = null;
 	}
@@ -31,9 +31,19 @@ public class NodeAbb
 		return this.info;
 	}
 	
+	public void setInfo(Usuario user)
+	{
+		this.info = user;
+	}
+	
 	public int getChave()
 	{
 		return this.chave;
+	}
+	
+	public void setChave(int chave)
+	{
+		this.chave = chave;
 	}
 	
 	public NodeAbb getEsquerda()
