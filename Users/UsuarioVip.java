@@ -2,7 +2,8 @@ package Users;
 
 import java.util.ArrayList;
 import java.util.List;
-import Lists.PlayList;
+
+import Structs.PlayList;
 
 public class UsuarioVip extends Usuario
 {

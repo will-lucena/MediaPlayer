@@ -11,6 +11,10 @@ public class UsersManager
 {
 	private String path = "usuarios.txt";
 	
+	/*
+	 * Formato do arquivo de usuarios
+	 * user.login/user.senha/user.nome/user.tipo
+	 */
 	public void gerarDataBase(DataBaseSingleton dataBase)
 	{
 		try (	FileWriter file = new FileWriter(path);
@@ -25,6 +29,8 @@ public class UsersManager
 				sb.append(user.getSenha());
 				sb.append("/");
 				sb.append(user.getNome());
+				sb.append("/");
+				sb.append(user.getId());
 				sb.append("/");
 				sb.append(user.getLoginMode().getMode());
 				

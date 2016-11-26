@@ -9,6 +9,7 @@ public abstract class Usuario
 	protected String nome;
 	protected String login;
 	protected String senha;
+	protected int id;
 	protected LoginModeStrategy loginMode;
 	
 	public Usuario()
@@ -16,14 +17,16 @@ public abstract class Usuario
 		this.nome = "Administrador";
 		this.login = "admin";
 		this.senha = "admin";
+		this.id = 0;
 		this.loginMode = new LoginModeAdm();
 	}
 	
-	public Usuario(String nome, String login, String senha, LoginModeStrategy loginMode)
+	public Usuario(String nome, String login, String senha, int id, LoginModeStrategy loginMode)
 	{
 		this.nome = nome;
 		this.login = login;
 		this.senha = senha;
+		this.id = id;
 		this.loginMode = loginMode;
 	}
 	
@@ -40,6 +43,11 @@ public abstract class Usuario
 	public String getSenha()
 	{
 		return this.senha;
+	}
+	
+	public int getId()
+	{
+		return this.id;
 	}
 	
 	public LoginModeStrategy getLoginMode()

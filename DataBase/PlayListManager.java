@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import Lists.PlayList;
+import Structs.PlayList;
 import Users.Usuario;
 
 public class PlayListManager
@@ -22,10 +22,11 @@ public class PlayListManager
 	 * musica2
 	 * musicax
 	 */
-	public void gerarPlayList(Usuario user, PlayList playlist)
+	public String gerarPlayList(Usuario user, PlayList playlist)
 	{
-		try (	FileWriter file = new FileWriter(this.gerarNomeArquivo());
-				PrintWriter escrever = new PrintWriter(file); )
+		String path = this.gerarNomeArquivo();
+		try (	FileWriter file = new FileWriter(path);
+				PrintWriter escrever = new PrintWriter(file);	)
 		{
 			escrever.print(user.getLogin());
 			escrever.print("/");
@@ -37,10 +38,11 @@ public class PlayListManager
 			{
 				escrever.println(linha);
 			}
-			
+			return path;
 		} catch (IOException e)
 		{
 			e.printStackTrace();
+			return null;
 		}
 	}
 	
@@ -58,12 +60,15 @@ public class PlayListManager
 	
 	private PlayList carregarPlayList(String path)
 	{
-		try (FileReader file = new FileReader(path);
-				BufferedReader buffer = new BufferedReader(file);)
+		try (	FileReader file = new FileReader(path);
+				BufferedReader buffer = new BufferedReader(file);	)
 		{
 			PlayList playlist = new PlayList();
 			
 			String linha = buffer.readLine();
+			linha = buffer.readLine();
+			linha = buffer.readLine();
+			
 			while (linha != null)
 			{
 				playlist.addMusica(linha);
