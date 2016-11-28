@@ -1,25 +1,21 @@
 package DataBase;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import Users.Usuario;
+import Structs.Abb;
 
 public class DataBaseSingleton
 {
-	private static List<Usuario> bancoDeUsuarios;
+	private static Abb bancoDeUsuarios = null;
 	
 	private DataBaseSingleton()
 	{
-		bancoDeUsuarios = new ArrayList<>();
+		bancoDeUsuarios = new Abb();
 	}
 	
-	public List<Usuario> getInstance()
+	public static Abb getInstance()
 	{
 		if (bancoDeUsuarios == null)
 		{
 			new DataBaseSingleton();
-			return DataBaseSingleton.bancoDeUsuarios;
 		}
 		return bancoDeUsuarios;
 	}	

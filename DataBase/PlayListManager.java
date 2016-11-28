@@ -11,7 +11,6 @@ import Users.Usuario;
 
 public class PlayListManager
 {
-	private String path;
 	private int contPlayLists = 0;
 	
 	/*
@@ -29,7 +28,7 @@ public class PlayListManager
 				PrintWriter escrever = new PrintWriter(file);	)
 		{
 			escrever.print(user.getLogin());
-			escrever.print("/");
+			escrever.print("|");
 			escrever.print(user.getSenha());
 			escrever.print("\n");
 			escrever.println(playlist.getNome());
@@ -50,15 +49,14 @@ public class PlayListManager
 	{
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(this.path);
-		sb.append("/");
 		sb.append("playList");
 		sb.append(this.contPlayLists);
+		sb.append(".txt");
 		
 		return sb.toString();
 	}
 	
-	private PlayList carregarPlayList(String path)
+	public PlayList carregarPlayList(String path)
 	{
 		try (	FileReader file = new FileReader(path);
 				BufferedReader buffer = new BufferedReader(file);	)
