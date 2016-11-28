@@ -4,8 +4,7 @@ package MediaPlayer;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import javax.swing.JFileChooser;
-
+import App.FileChooser;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
@@ -17,13 +16,7 @@ public class MediaPlayer
 	{
 		try
 		{
-			String str = "";
-			JFileChooser chooser = new JFileChooser();
-		    if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
-		    {
-		       System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
-		       str = chooser.getSelectedFile().getAbsolutePath();
-		    }
+			String str = new FileChooser().escolherArquivo("Selecione a musica a ser tocada");
 			FileInputStream stream = new FileInputStream(str);
 			mediaPlayer = new Player(stream);
 			mediaPlayer.play();
