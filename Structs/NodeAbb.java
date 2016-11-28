@@ -1,7 +1,6 @@
 package Structs;
 
 import Users.Usuario;
-import Users.UsuarioAdm;
 
 public class NodeAbb
 {

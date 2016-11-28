@@ -1,6 +1,8 @@
 package Structs;
 
+import DataBase.PlayListManager;
 import Users.Usuario;
+import Users.UsuarioVip;
 
 public class Abb
 {
@@ -27,7 +29,7 @@ public class Abb
 		{
 			return false;
 		}
-		
+
 		if (user.getId() == node.getChave())
 		{
 			return true;
@@ -42,7 +44,7 @@ public class Abb
 		{
 			return buscar(node.getEsquerda(), user);
 		}
-		
+
 		return false;
 	}
 
@@ -53,10 +55,9 @@ public class Abb
 			this.raiz = new NodeAbb();
 			this.raiz.setInfo(user);
 			this.raiz.setChave(user.getId());
-		}
-		else
+		} else
 		{
-			inserir(this.raiz, user);			
+			inserir(this.raiz, user);
 		}
 	}
 
@@ -81,7 +82,6 @@ public class Abb
 		return node;
 	}
 
-	// * terminar de implementar
 	public void remover(Usuario user)
 	{
 		this.raiz = this.remover(this.raiz, user);
@@ -104,7 +104,7 @@ public class Abb
 		{
 			node.setEsquerda(this.remover(node.getEsquerda(), user));
 		}
-		
+
 		return node;
 	}
 
@@ -122,7 +122,7 @@ public class Abb
 
 		else
 		{
-			
+
 			return removerCaso2(node);
 		}
 	}
@@ -135,7 +135,7 @@ public class Abb
 		node.setInfo(sucessor.getInfo());
 		return node;
 	}
-	
+
 	private NodeAbb buscarSucessor(NodeAbb node)
 	{
 		if (node.getDireita() != null)
@@ -144,5 +144,53 @@ public class Abb
 		}
 		return node;
 	}
-	/**/
+
+	public String gerarRegistro()
+	{
+		if (this.raiz != null)
+		{
+			StringBuilder sb = new StringBuilder();
+			this.preOrdem(sb, this.raiz);
+			return sb.toString();
+		}
+		return null;
+	}
+
+	private String preOrdem(StringBuilder sb, NodeAbb node)
+	{
+		if (node != null)
+		{
+			sb.append(gerarLinha(node.getInfo()));
+			this.preOrdem(sb, node.getEsquerda());
+			this.preOrdem(sb, node.getDireita());
+			return sb.toString();
+		}
+		return sb.toString();
+	}
+
+	private String gerarLinha(Usuario user)
+	{
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(user.getLogin());
+		sb.append("|");
+		sb.append(user.getSenha());
+		sb.append("|");
+		sb.append(user.getNome());
+		sb.append("|");
+		sb.append(user.getLoginMode().getMode());
+		sb.append("\n");
+		
+		if (user.getClass() == UsuarioVip.class)
+		{
+			UsuarioVip vip = (UsuarioVip) user;
+			for (PlayList playlist : vip.getPlayLists())
+			{
+				PlayListManager manager = new PlayListManager();
+				manager.gerarPlayList(vip, playlist);
+			}
+		}
+
+		return sb.toString();
+	}
 }
