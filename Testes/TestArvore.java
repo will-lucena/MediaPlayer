@@ -1,6 +1,7 @@
 package Testes;
 
 import Exceptions.LoginIndisponivelException;
+import Exceptions.UsuarioNaoExisteException;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class TestArvore
     }
 
     @Test
-    public void testRemover() throws LoginIndisponivelException
+    public void testRemover() throws LoginIndisponivelException, UsuarioNaoExisteException
     {
         Abb arvore = new Abb();
         Usuario user = new UsuarioAdm();
