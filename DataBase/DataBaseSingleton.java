@@ -1,6 +1,7 @@
 package DataBase;
 
 import Exceptions.UsuarioInvalidoException;
+import Exceptions.UsuarioNaoExisteException;
 import Structs.Abb;
 import Users.Usuario;
 
@@ -25,9 +26,9 @@ public class DataBaseSingleton
     
     public static Usuario autenticarUsuario(String login, String senha) throws UsuarioInvalidoException
     {
-        Usuario user = bancoDeUsuarios.buscar(login);
+        Usuario user = getInstance().buscar(login);
         
-        if (user.getSenha().equals(senha))
+        if (user != null && user.getSenha().equals(senha))
         {
             return user;
         }
