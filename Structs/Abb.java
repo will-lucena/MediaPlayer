@@ -4,6 +4,7 @@ import DataBase.PlayListManager;
 import Exceptions.LoginIndisponivelException;
 import Exceptions.UsuarioNaoExisteException;
 import Users.Usuario;
+import Users.UsuarioAdm;
 import Users.UsuarioVip;
 
 public class Abb
@@ -13,7 +14,8 @@ public class Abb
 
     public Abb()
     {
-        this.raiz = null;
+        this.raiz = new NodeAbb();
+        this.raiz.setInfo(new UsuarioAdm());
     }
 
     public NodeAbb getRaiz()
@@ -96,21 +98,28 @@ public class Abb
 
     private NodeAbb remover(NodeAbb node, String user) throws UsuarioNaoExisteException
     {
-        if (user.compareTo(node.getInfo().getLogin()) == 0)
+        if (node == null)
+        {
+            throw new UsuarioNaoExisteException("Usuario invalido");
+        }
+        
+        else if (user.compareTo(node.getInfo().getLogin()) == 0)
         {
             node = this.removerCaso1(node);
             return node;
         }
         else if (user.compareTo(node.getInfo().getLogin()) > 0)
         {
-            node.setDireita(this.remover(node.getDireita(), user));
+            NodeAbb tmp = this.remover(node.getDireita(), user);
+            node.setDireita(tmp);
         }
         else if (user.compareTo(node.getInfo().getLogin()) < 0)
         {
-            node.setEsquerda(this.remover(node.getEsquerda(), user));
+            NodeAbb tmp = this.remover(node.getEsquerda(), user);
+            node.setEsquerda(tmp);
         }
-
-        throw new UsuarioNaoExisteException("Usuario invalido");
+        
+        return null;
     }
 
     private NodeAbb removerCaso1(NodeAbb node) throws UsuarioNaoExisteException
@@ -176,12 +185,12 @@ public class Abb
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(user.getLogin());
-        sb.append("|");
-        sb.append(user.getSenha());
-        sb.append("|");
         sb.append(user.getNome());
-        sb.append("|");
+        sb.append(" | ");
+        sb.append(user.getLogin());
+        sb.append(" | ");
+        sb.append(user.getSenha());
+        sb.append(" | ");
         sb.append(user.getLoginMode().getMode());
         sb.append("\n");
 
@@ -190,8 +199,7 @@ public class Abb
             UsuarioVip vip = (UsuarioVip) user;
             for (PlayList playlist : vip.getPlayLists())
             {
-                PlayListManager manager = new PlayListManager();
-                manager.gerarPlayList(vip, playlist);
+                new PlayListManager().gerarPlayList(vip, playlist);
             }
         }
 
