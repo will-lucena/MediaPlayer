@@ -1,12 +1,10 @@
 package Interface;
 
 import DataBase.DataBaseSingleton;
+import DataBase.UsersManager;
 import Exceptions.LoginIndisponivelException;
 import Exceptions.UsuarioInvalidoException;
 import Users.Usuario;
-import Users.UsuarioAdm;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class TelaLogin extends javax.swing.JFrame
@@ -15,9 +13,7 @@ public class TelaLogin extends javax.swing.JFrame
     public TelaLogin() throws LoginIndisponivelException
     {
         initComponents();
-        
-        DataBaseSingleton.getInstance().inserir(new UsuarioAdm());
-        
+        new UsersManager().carregarDataBase();
     }
 
     @SuppressWarnings("unchecked")
@@ -69,7 +65,7 @@ public class TelaLogin extends javax.swing.JFrame
         String login = this.campoLogin.getText();
         String senha = this.campoSenha.getText();
 
-        if (login != null && senha != null)
+        if (!"".equals(login) && !"".equals(senha))
         {
             Usuario user;
             try
@@ -80,11 +76,18 @@ public class TelaLogin extends javax.swing.JFrame
             } catch (UsuarioInvalidoException ex)
             {
                 JOptionPane.showMessageDialog(null, "Usuario nao existe ou senha incorreta");
-            } finally
+            }
+            finally
             {
                 this.campoLogin.setText("");
                 this.campoSenha.setText("");
             }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos e tente novamente");
+            this.campoLogin.setText("");
+            this.campoSenha.setText("");
         }
     }//GEN-LAST:event_botaoLogarActionPerformed
 

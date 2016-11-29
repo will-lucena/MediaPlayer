@@ -1,11 +1,10 @@
 package Interface;
 
+import DataBase.UsersManager;
 import Exceptions.LoginIndisponivelException;
 import Exceptions.UsuarioNaoExisteException;
 import Users.UsuarioComum;
 import Users.UsuarioVip;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class TelaAdm extends javax.swing.JFrame
@@ -14,44 +13,50 @@ public class TelaAdm extends javax.swing.JFrame
     public TelaAdm()
     {
         initComponents();
-        
+
         this.hiddenAll();
     }
-    
+
     private void hiddenAll()
     {
         this.labelLogin.setVisible(false);
         this.labelNome.setVisible(false);
         this.labelSenha.setVisible(false);
-        
+
         this.campoLogin.setVisible(false);
         this.campoNome.setVisible(false);
         this.campoSenha.setVisible(false);
-        
+
         this.botaoUserComum.setVisible(false);
         this.botaoUserVip.setVisible(false);
         this.botaoRemover.setVisible(false);
     }
-    
+
     private void showInserir()
     {
         this.labelLogin.setVisible(true);
         this.labelNome.setVisible(true);
         this.labelSenha.setVisible(true);
-        
+
         this.campoLogin.setVisible(true);
         this.campoNome.setVisible(true);
         this.campoSenha.setVisible(true);
-        
+
         this.botaoUserComum.setVisible(true);
         this.botaoUserVip.setVisible(true);
     }
-    
+
     private void showRemover()
     {
         this.labelLogin.setVisible(true);
         this.campoLogin.setVisible(true);
         this.botaoRemover.setVisible(true);
+    }
+    
+    private void showUpdate()
+    {
+        this.labelLogin.setVisible(true);
+        this.campoLogin.setVisible(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -72,7 +77,6 @@ public class TelaAdm extends javax.swing.JFrame
         menuControle = new javax.swing.JMenu();
         menuItemCadastro = new javax.swing.JMenuItem();
         menuItemRemocao = new javax.swing.JMenuItem();
-        menuItemUpdate = new javax.swing.JMenuItem();
         menuPlayer = new javax.swing.JMenu();
         menuSair = new javax.swing.JMenu();
 
@@ -80,16 +84,16 @@ public class TelaAdm extends javax.swing.JFrame
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         labelLogin.setText("Login");
-        getContentPane().add(labelLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, -1, -1));
+        getContentPane().add(labelLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, -1, -1));
 
         labelSenha.setText("Senha");
-        getContentPane().add(labelSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, -1, -1));
+        getContentPane().add(labelSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 70, -1, -1));
 
         labelNome.setText("Nome");
-        getContentPane().add(labelNome, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, -1, -1));
-        getContentPane().add(campoLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 180, -1));
-        getContentPane().add(campoSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 90, 180, -1));
-        getContentPane().add(campoNome, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, 180, -1));
+        getContentPane().add(labelNome, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, -1, -1));
+        getContentPane().add(campoLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 30, 180, -1));
+        getContentPane().add(campoSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, 180, -1));
+        getContentPane().add(campoNome, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 110, 180, -1));
 
         botaoUserComum.setText("Adicionar Usuario Comum");
         botaoUserComum.addActionListener(new java.awt.event.ActionListener()
@@ -119,7 +123,7 @@ public class TelaAdm extends javax.swing.JFrame
                 botaoRemoverActionPerformed(evt);
             }
         });
-        getContentPane().add(botaoRemover, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 160, -1, -1));
+        getContentPane().add(botaoRemover, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 150, -1, -1));
 
         menuControle.setText("Controle de Usuarios");
 
@@ -143,15 +147,26 @@ public class TelaAdm extends javax.swing.JFrame
         });
         menuControle.add(menuItemRemocao);
 
-        menuItemUpdate.setText("Atualizar Usuario");
-        menuControle.add(menuItemUpdate);
-
         jMenuBar1.add(menuControle);
 
         menuPlayer.setText("Player");
         jMenuBar1.add(menuPlayer);
 
         menuSair.setText("Sair");
+        menuSair.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                menuSairMouseClicked(evt);
+            }
+        });
+        menuSair.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                menuSairActionPerformed(evt);
+            }
+        });
         jMenuBar1.add(menuSair);
 
         setJMenuBar(jMenuBar1);
@@ -165,7 +180,7 @@ public class TelaAdm extends javax.swing.JFrame
         String senha = this.campoSenha.getText();
         String nome = this.campoNome.getText();
 
-        if (login != null && senha != null && nome != null)
+        if (login != "" && senha != "" && nome != "")
         {
             try
             {
@@ -175,7 +190,7 @@ public class TelaAdm extends javax.swing.JFrame
             {
                 JOptionPane.showMessageDialog(null, "Usuario ja existe");
             }
-             finally
+            finally
             {
                 this.campoLogin.setText("");
                 this.campoNome.setText("");
@@ -197,7 +212,7 @@ public class TelaAdm extends javax.swing.JFrame
         String senha = this.campoSenha.getText();
         String nome = this.campoNome.getText();
 
-        if (login != null && senha != null && nome != null)
+        if (login != "" && senha != "" && nome != "")
         {
             try
             {
@@ -206,13 +221,14 @@ public class TelaAdm extends javax.swing.JFrame
             } catch (LoginIndisponivelException ex)
             {
                 JOptionPane.showMessageDialog(null, "Usuario ja existe");
-            } finally
+            }
+            finally
             {
                 this.campoLogin.setText("");
                 this.campoNome.setText("");
                 this.campoSenha.setText("");
             }
-        } 
+        }
         else
         {
             this.campoLogin.setText("");
@@ -236,20 +252,33 @@ public class TelaAdm extends javax.swing.JFrame
 
     private void botaoRemoverActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoRemoverActionPerformed
     {//GEN-HEADEREND:event_botaoRemoverActionPerformed
-        if (this.campoLogin.getText() != null)
+        if (!"".equals(this.campoLogin.getText()))
         {
             try
             {
                 DataBase.DataBaseSingleton.getInstance().remover(this.campoLogin.getText());
+                JOptionPane.showMessageDialog(null, "Usuario removido com sucesso, login disponivel novamente para cadastro");
             } catch (UsuarioNaoExisteException ex)
             {
                 JOptionPane.showMessageDialog(null, "Login invalido");
-            } finally
+            }
+            finally
             {
                 this.campoLogin.setText("");
             }
         }
     }//GEN-LAST:event_botaoRemoverActionPerformed
+
+    private void menuSairActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuSairActionPerformed
+    {//GEN-HEADEREND:event_menuSairActionPerformed
+        
+    }//GEN-LAST:event_menuSairActionPerformed
+
+    private void menuSairMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_menuSairMouseClicked
+    {//GEN-HEADEREND:event_menuSairMouseClicked
+        new UsersManager().gerarDataBase();
+        System.exit(0);
+    }//GEN-LAST:event_menuSairMouseClicked
 
     public static void main(String args[])
     {
@@ -276,7 +305,6 @@ public class TelaAdm extends javax.swing.JFrame
     private javax.swing.JMenu menuControle;
     private javax.swing.JMenuItem menuItemCadastro;
     private javax.swing.JMenuItem menuItemRemocao;
-    private javax.swing.JMenuItem menuItemUpdate;
     private javax.swing.JMenu menuPlayer;
     private javax.swing.JMenu menuSair;
     // End of variables declaration//GEN-END:variables
