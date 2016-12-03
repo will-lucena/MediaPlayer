@@ -1,13 +1,11 @@
 package DataBase;
 
-import Exceptions.UsuarioInvalidoException;
 import Exceptions.UsuarioNaoExisteException;
 import Structs.Abb;
 import Users.Usuario;
 
 public class DataBaseSingleton
 {
-
     private static Abb bancoDeUsuarios = null;
 
     private DataBaseSingleton()

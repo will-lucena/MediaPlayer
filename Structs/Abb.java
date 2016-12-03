@@ -6,12 +6,27 @@ import Exceptions.UsuarioNaoExisteException;
 import Users.Usuario;
 import Users.UsuarioAdm;
 import Users.UsuarioVip;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Abb
 {
-
     private NodeAbb raiz;
 
+    public void show()
+    {
+        show(raiz);
+    }
+    private void show(NodeAbb node)
+    {
+        if (node != null)
+        {
+            System.out.println(node.getInfo().getNome());
+            show(node.getEsquerda());
+            show(node.getDireita());
+        }
+    }
+    
     public Abb()
     {
         this.raiz = new NodeAbb();
@@ -23,6 +38,34 @@ public class Abb
         return this.raiz;
     }
 
+    public void atualizarUsuario(Usuario user)
+    {
+        atualizar(user, this.raiz);
+    }
+    
+    private void atualizar(Usuario user, NodeAbb node)
+    {
+        if (node == null)
+        {
+            return;
+        }
+
+        if (user.getLogin().compareTo(node.getInfo().getLogin()) == 0)
+        {
+            node.setInfo(user);
+        }
+
+        if (user.getLogin().compareToIgnoreCase(node.getInfo().getLogin()) > 0)
+        {
+            atualizar(user, node.getDireita());
+        }
+
+        if (user.getLogin().compareToIgnoreCase(node.getInfo().getLogin()) < 0)
+        {
+            atualizar(user, node.getEsquerda());
+        }
+    }
+    
     public Usuario buscar(String user) throws UsuarioNaoExisteException
     {
         return this.buscar(this.raiz, user);
@@ -62,7 +105,7 @@ public class Abb
         }
         else
         {
-            inserir(this.raiz, user);
+            this.raiz = inserir(this.raiz, user);
         }
     }
 
@@ -167,6 +210,25 @@ public class Abb
         }
         return null;
     }
+    
+    public List<Usuario> getUsuarios()
+    {
+        List<Usuario> users = new ArrayList<>();
+        users = this.preOrdem(users, this.raiz);
+        return users;
+    }
+    
+    private List<Usuario> preOrdem(List<Usuario> users, NodeAbb node)
+    {
+        if (node != null)
+        {
+            users.add(node.getInfo());
+            this.preOrdem(users, node.getEsquerda());
+            this.preOrdem(users, node.getDireita());
+            return users;
+        }
+        return users;
+    }
 
     private String preOrdem(StringBuilder sb, NodeAbb node)
     {
@@ -192,30 +254,6 @@ public class Abb
         sb.append(" | ");
         sb.append(user.getLoginMode().getMode());
         sb.append("\n");
-
-        if (user.getClass() == UsuarioVip.class)
-        {
-            UsuarioVip vip = (UsuarioVip) user;
-            if (vip.getPlayLists() != null)
-            {
-                for (PlayList playlist : vip.getPlayLists())
-                {
-                    new PlayListManager().gerarPlayList(vip, playlist);
-                }
-            }
-
-        }
-        else if (user.getClass() == UsuarioAdm.class)
-        {
-            UsuarioAdm adm = (UsuarioAdm) user;
-            if (adm.getPlayLists() != null)
-            {
-                for (PlayList playlist : adm.getPlayLists())
-                {
-                    new PlayListManager().gerarPlayList(adm, playlist);
-                }
-            }
-        }
 
         return sb.toString();
     }

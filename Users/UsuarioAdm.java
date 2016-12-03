@@ -18,6 +18,7 @@ public class UsuarioAdm extends Usuario
     public UsuarioAdm(String nome, String login, String senha)
     {
         super(nome, login, senha, new LoginModeAdm());
+        this.playLists = new ArrayList<>();
     }
     
     public List<PlayList> getPlayLists()

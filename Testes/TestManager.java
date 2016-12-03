@@ -19,7 +19,6 @@ public class TestManager
     @Test
     public void testEscritaArquivoUser() throws LoginIndisponivelException
     {
-        UsersManager manager = new UsersManager("users.txt", "playlists.txt");
         Usuario user = new UsuarioAdm();
         Usuario user1 = new UsuarioVip("Will", "will", "123");
         Usuario user2 = new UsuarioComum("Eloiza", "elo", "123");
@@ -28,7 +27,7 @@ public class TestManager
         DataBaseUsersSingleton.getInstance().inserir(user1);
         DataBaseUsersSingleton.getInstance().inserir(user2);
 
-        assertEquals(true, manager.gerarDataBase());
+        assertEquals(true, new UsersManager().gerarDataBase());
     }
 
     @Test
@@ -36,9 +35,7 @@ public class TestManager
     {
         Usuario user = new UsuarioVip("Will", "will", "123");
         UsuarioVip vip = (UsuarioVip) user;
-        PlayListManager manager = new PlayListManager();
 
         vip.criarPlayList();
-        manager.gerarPlayList(user, vip.getPlayLists().get(0));
     }
 }

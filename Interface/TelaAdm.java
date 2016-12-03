@@ -1,7 +1,9 @@
 package Interface;
 
 import App.FileChooser;
+import DataBase.DataBaseSingleton;
 import DataBase.DataBaseSongsSingleton;
+import DataBase.DataBaseUsersSingleton;
 import DataBase.PlayListManager;
 import DataBase.SongsManager;
 import DataBase.UsersManager;
@@ -9,6 +11,7 @@ import Exceptions.BancoVazioException;
 import Exceptions.LoginIndisponivelException;
 import Exceptions.UsuarioNaoExisteException;
 import MediaPlayer.MediaPlayer;
+import Structs.Abb;
 import Structs.PlayList;
 import Users.Usuario;
 import Users.UsuarioAdm;
@@ -19,26 +22,27 @@ import javax.swing.JOptionPane;
 
 public class TelaAdm extends javax.swing.JDialog
 {
+
     private MediaPlayer player;
     private boolean pause;
     private boolean playing;
     private java.awt.Frame parent;
     private UsuarioAdm user;
-    
+
     public TelaAdm(java.awt.Frame parent, boolean modal, Usuario user)
     {
         super(parent, modal);
         initComponents();
-        
+
         this.player = new MediaPlayer();
         this.pause = false;
         this.playing = false;
         this.parent = parent;
         this.user = (UsuarioAdm) user;
         this.configComboBox();
-               
+
         limparJLists();
-        
+
         try
         {
             String musicas = DataBase.DataBaseSongsSingleton.getInstance().gerarRegistro();
@@ -57,15 +61,15 @@ public class TelaAdm extends javax.swing.JDialog
     {
         super(parent, modal);
         initComponents();
-        
+
         this.player = new MediaPlayer();
         this.pause = false;
         this.playing = false;
         this.parent = parent;
         this.configComboBox();
-               
+
         limparJLists();
-        
+
         try
         {
             String musicas = DataBase.DataBaseSongsSingleton.getInstance().gerarRegistro();
@@ -79,14 +83,16 @@ public class TelaAdm extends javax.swing.JDialog
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }
-    
+
     private void limparJLists()
     {
-        String[] vazio = {};
+        String[] vazio =
+        {
+        };
         atualizarListMusicas(vazio, this.listMusicas);
         atualizarListMusicas(vazio, this.listPlayListMusicas);
     }
-    
+
     private void autoComplete()
     {
         try
@@ -101,7 +107,7 @@ public class TelaAdm extends javax.swing.JDialog
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }
-    
+
     private void atualizarListMusicas(String[] list, JList<String> jlist)
     {
         jlist.setModel(new javax.swing.AbstractListModel<String>()
@@ -111,7 +117,7 @@ public class TelaAdm extends javax.swing.JDialog
             {
                 return list.length;
             }
-            
+
             @Override
             public String getElementAt(int i)
             {
@@ -119,7 +125,7 @@ public class TelaAdm extends javax.swing.JDialog
             }
         });
     }
-    
+
     private void configComboBox()
     {
         this.comboBoxPlayList.removeAllItems();
@@ -128,7 +134,7 @@ public class TelaAdm extends javax.swing.JDialog
         this.comboBoxTipoUser.addItem("Vip");
         this.comboBoxTipoUser.addItem("Administrador");
     }
-    
+
     private void addUsuarioComum(String nome, String login, String senha)
     {
         try
@@ -138,15 +144,14 @@ public class TelaAdm extends javax.swing.JDialog
         } catch (LoginIndisponivelException e)
         {
             JOptionPane.showMessageDialog(null, login + " ja existe");
-        }
-        finally
+        } finally
         {
             this.campoLogin.setText("");
             this.campoNome.setText("");
             this.campoSenha.setText("");
         }
     }
-    
+
     private void addUsuarioVip(String nome, String login, String senha)
     {
         try
@@ -156,15 +161,14 @@ public class TelaAdm extends javax.swing.JDialog
         } catch (LoginIndisponivelException e)
         {
             JOptionPane.showMessageDialog(null, login + " ja existe");
-        }
-        finally
+        } finally
         {
             this.campoLogin.setText("");
             this.campoNome.setText("");
             this.campoSenha.setText("");
         }
     }
-    
+
     private void addUsuarioAdm(String nome, String login, String senha)
     {
         try
@@ -174,15 +178,14 @@ public class TelaAdm extends javax.swing.JDialog
         } catch (LoginIndisponivelException e)
         {
             JOptionPane.showMessageDialog(null, login + " ja existe");
-        }
-        finally
+        } finally
         {
             this.campoLogin.setText("");
             this.campoNome.setText("");
             this.campoSenha.setText("");
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents()
@@ -412,9 +415,16 @@ public class TelaAdm extends javax.swing.JDialog
 
     private void formWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosing
     {//GEN-HEADEREND:event_formWindowClosing
-        new UsersManager("users.txt", "playlists.txt").gerarDataBasePlaylists();
-        new UsersManager("users.txt", "playlists.txt").gerarDataBase();
-        new SongsManager("musicas.txt").gerarDataBase();
+        new PlayListManager().gerarPlayLists();
+        try
+        {
+            DataBaseUsersSingleton.getInstance().remover("admin");
+        } catch (UsuarioNaoExisteException ex)
+        {
+
+        }
+        new UsersManager().gerarDataBase();
+        new SongsManager().gerarDataBase();
         dispose();
         System.exit(0);
     }//GEN-LAST:event_formWindowClosing
@@ -428,6 +438,7 @@ public class TelaAdm extends javax.swing.JDialog
             this.pause = false;
             this.botaoPlay.setText("Play");
             this.campoMusica.setText("");
+            this.listMusicas.clearSelection();
         }
     }//GEN-LAST:event_botaoStopActionPerformed
 
@@ -444,19 +455,29 @@ public class TelaAdm extends javax.swing.JDialog
 
     private void botaoPlayActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoPlayActionPerformed
     {//GEN-HEADEREND:event_botaoPlayActionPerformed
-        String path = this.listMusicas.getSelectedValue();
+        String path;
+        if (this.listMusicas.getSelectedValue() != null && !this.listMusicas.getSelectedValue().equals(""))
+        {
+            path = this.listMusicas.getSelectedValue();
+        }
+        else
+        {
+            path = this.campoMusica.getText();
+        }
         if (!path.equals(""))
         {
             this.campoMusica.setText(path);
             this.player.setPath(path);
+            this.listMusicas.clearSelection();
         }
-        
+
         if (!this.playing)
         {
             this.playing = true;
             this.pause = false;
             new Thread(this.player.createRunnable()).start();
             this.botaoPlay.setText("Play");
+            this.listMusicas.clearSelection();
         }
     }//GEN-LAST:event_botaoPlayActionPerformed
 
@@ -485,8 +506,7 @@ public class TelaAdm extends javax.swing.JDialog
             } catch (UsuarioNaoExisteException ex)
             {
                 JOptionPane.showMessageDialog(null, "Login invalido");
-            }
-            finally
+            } finally
             {
                 this.campoLoginRemover.setText("");
             }
@@ -535,7 +555,7 @@ public class TelaAdm extends javax.swing.JDialog
     }//GEN-LAST:event_campoMusicaFocusGained
 
     private void campoMusicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoMusicaActionPerformed
-        
+
     }//GEN-LAST:event_campoMusicaActionPerformed
 
     private void botaoCriarPlaylistActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoCriarPlaylistActionPerformed
@@ -544,12 +564,11 @@ public class TelaAdm extends javax.swing.JDialog
         tela.setVisible(true);
         while (tela.isVisible())
         {
-            
+
         }
         this.user.addPlayList(tela.getPlayList());
-        new PlayListManager().gerarPlayList(user, tela.getPlayList());
         this.comboBoxPlayList.addItem(tela.getPlayList().getNome());
-        
+
         StringBuilder sb = new StringBuilder();
         for (String str : tela.getPlayList().getMusicas())
         {
@@ -562,9 +581,9 @@ public class TelaAdm extends javax.swing.JDialog
 
     private void comboBoxPlayListActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_comboBoxPlayListActionPerformed
     {//GEN-HEADEREND:event_comboBoxPlayListActionPerformed
-        
+
     }//GEN-LAST:event_comboBoxPlayListActionPerformed
-    
+
     public static void main(String args[])
     {
         java.awt.EventQueue.invokeLater(new Runnable()

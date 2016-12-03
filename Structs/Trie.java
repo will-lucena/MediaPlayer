@@ -4,13 +4,16 @@ import Exceptions.BancoVazioException;
 
 public class Trie
 {
+
+    private final StringBuilder musicas;
     private final NodeTrie raiz;
-    
+
     public Trie()
     {
         this.raiz = new NodeTrie();
+        this.musicas = new StringBuilder();
     }
-    
+
     public boolean isEmpty()
     {
         return this.raiz.getNumFilhos() == 0;
@@ -89,6 +92,7 @@ public class Trie
                         palavras.append(sb.toString());
                         palavras.append("\n");
                         gerarRegistro(node, sb, palavras);
+                        
                     }
                     else
                     {
@@ -110,7 +114,7 @@ public class Trie
             }
         }
     }
-    
+
     public String[] buscarPalavra(String palavra) throws BancoVazioException
     {
         return gerarRegistro().split("\n");

@@ -6,20 +6,21 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.swing.JOptionPane;
 
 public class SongsManager
 {
-    private String path;
-    
-    public SongsManager(String path)
+    private final String baseMusicas;
+
+    public SongsManager()
     {
-        this.path = path;
+        this.baseMusicas = "baseMusicas.txt";
     }
-    
+
     public boolean gerarDataBase()
     {
-        try (FileWriter file = new FileWriter(path);
-                PrintWriter escrever = new PrintWriter(file);)
+        try (FileWriter file = new FileWriter(baseMusicas);
+            PrintWriter escrever = new PrintWriter(file);)
         {
             String registro = DataBaseSongsSingleton.getInstance().gerarRegistro();
             String[] registros = registro.split("\n");
@@ -28,28 +29,34 @@ public class SongsManager
                 escrever.println(str);
             }
             return true;
-        } catch (IOException | BancoVazioException e)
+        } catch (IOException e1)
         {
+            JOptionPane.showMessageDialog(null, "Erro no arquivo de musicas");
+            return false;
+        } catch (BancoVazioException e2)
+        {
+            JOptionPane.showMessageDialog(null, "Banco de musicas vazio");
             return false;
         }
     }
-    
+
     public boolean carregarDataBase()
     {
-        try (FileReader file = new FileReader(path);
-                BufferedReader buffer = new BufferedReader(file);)
+        try (FileReader file = new FileReader(baseMusicas);
+            BufferedReader buffer = new BufferedReader(file);)
         {
             DataBaseSongsSingleton.getInstance();
             String linha = buffer.readLine();
-            
+
             while (linha != null && !linha.equals(""))
             {
                 DataBaseSongsSingleton.getInstance().inserir(linha);
                 linha = buffer.readLine();
             }
             return true;
-        } catch (IOException ex)
+        } catch (IOException e1)
         {
+            JOptionPane.showMessageDialog(null, "Erro no arquivo de musicas");
             return false;
         }
     }

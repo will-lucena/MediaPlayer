@@ -1,11 +1,14 @@
 package Interface;
 
+import DataBase.DataBaseSingleton;
 import DataBase.DataBaseUsersSingleton;
+import DataBase.PlayListManager;
 import DataBase.SongsManager;
 import DataBase.UsersManager;
 import Exceptions.LoginIndisponivelException;
 import Exceptions.UsuarioInvalidoException;
 import Exceptions.UsuarioNaoExisteException;
+import Structs.Abb;
 import Users.Usuario;
 import javax.swing.JOptionPane;
 
@@ -15,8 +18,9 @@ public class TelaLogin extends javax.swing.JFrame
     public TelaLogin() throws LoginIndisponivelException
     {
         initComponents();
-        new UsersManager("users.txt", "playlists.txt").carregarDataBase();
-        new SongsManager("musicas.txt").carregarDataBase();
+        new UsersManager().carregarDataBase();
+        new PlayListManager().carregarPlayLists();
+        new SongsManager().carregarDataBase();
     }
 
     @SuppressWarnings("unchecked")
