@@ -4,8 +4,7 @@ import Exceptions.BancoVazioException;
 
 public class Trie
 {
-
-    private final StringBuilder musicas;
+    private StringBuilder musicas;
     private final NodeTrie raiz;
 
     public Trie()
@@ -68,9 +67,10 @@ public class Trie
     {
         if (!isEmpty())
         {
+            this.musicas = new StringBuilder();
             StringBuilder palavras = new StringBuilder();
             gerarRegistro(this.raiz, new StringBuilder(), palavras);
-            return palavras.toString();
+            return musicas.toString();
         }
         else
         {
@@ -86,32 +86,35 @@ public class Trie
             {
                 if (node.isIsWord())
                 {
-                    if (node.getNumFilhos() > 0)
+                    if (node.getFilhos().size() > 0)
                     {
                         sb.append(node.getC());
-                        palavras.append(sb.toString());
-                        palavras.append("\n");
-                        gerarRegistro(node, sb, palavras);
-                        
+                        musicas.append(palavras.toString());
+                        musicas.append(sb.toString());
+                        musicas.append("\n");
+                        gerarRegistro(node, sb, new StringBuilder().append(palavras.toString()));
                     }
                     else
                     {
-                        palavras.append(sb.toString());
-                        palavras.append(node.getC());
-                        palavras.append("\n");
+                        sb.append(node.getC());
+                        musicas.append(palavras.toString());
+                        musicas.append(sb.toString());
+                        musicas.append("\n");
                         break;
                     }
                 }
                 else
                 {
                     sb.append(node.getC());
-                    gerarRegistro(node, sb, palavras);
+                    if (node.getFilhos().size() > 1)
+                    {
+                        palavras.append(sb.toString());
+                        sb = new StringBuilder();
+                    }
+                    gerarRegistro(node, sb, new StringBuilder().append(palavras.toString()));
                 }
             }
-            if (raiz.equals(this.raiz))
-            {
-                sb = new StringBuilder();
-            }
+            sb = new StringBuilder();
         }
     }
 
