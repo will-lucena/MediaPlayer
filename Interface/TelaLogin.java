@@ -20,6 +20,7 @@ public class TelaLogin extends javax.swing.JFrame
         initComponents();
         new UsersManager().carregarDataBase();
         new PlayListManager().carregarPlayLists();
+        Abb a = DataBaseUsersSingleton.getInstance();
         new SongsManager().carregarDataBase();
     }
 

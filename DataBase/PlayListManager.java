@@ -118,7 +118,16 @@ public class PlayListManager
         try (FileReader file = new FileReader(this.basePlayLists);
             BufferedReader buffer = new BufferedReader(file);)
         {
-            for (Usuario user : DataBaseSingleton.getInstance().getUsuarios())
+            String linha = buffer.readLine();
+
+            while (linha != null && !linha.equals(""))
+            {
+                this.playlists.append(linha);
+                this.playlists.append("\n");
+                linha = buffer.readLine();
+            }
+
+            for (Usuario user : DataBaseUsersSingleton.getInstance().getUsuarios())
             {
                 if (user.getClass().equals(UsuarioVip.class))
                 {
@@ -137,7 +146,7 @@ public class PlayListManager
         }
     }
 
-    private void carregarPlayLists(Usuario user)
+    private void carregarPlayLists(UsuarioVip user)
     {
         PlayList playlist = new PlayList();
 
@@ -158,6 +167,40 @@ public class PlayListManager
                         playlist.addMusica(linha);
                         linha = buffer.readLine();
                     }
+                    user.addPlayList(playlist);
+                    DataBaseSingleton.getInstance().atualizarUsuario(user);
+                }
+            } catch (FileNotFoundException e1)
+            {
+                JOptionPane.showMessageDialog(null, "Erro no arquivo de playlists");
+            } catch (IOException e2)
+            {
+                JOptionPane.showMessageDialog(null, "Erro no arquivo de playlists");
+            }
+        }
+    }
+
+    private void carregarPlayLists(UsuarioAdm user)
+    {
+        for (String arquivoPlaylist : this.playlists.toString().split("\n"))
+        {
+            try (FileReader file = new FileReader(arquivoPlaylist);
+                BufferedReader buffer = new BufferedReader(file);)
+            {
+                PlayList playlist = new PlayList();
+                String linha = buffer.readLine();
+                if (validar(user, linha))
+                {
+                    linha = buffer.readLine();
+                    playlist.setNome(linha);
+                    linha = buffer.readLine();
+
+                    while (linha != null)
+                    {
+                        playlist.addMusica(linha);
+                        linha = buffer.readLine();
+                    }
+                    user.addPlayList(playlist);
                     DataBaseSingleton.getInstance().atualizarUsuario(user);
                 }
             } catch (FileNotFoundException e1)
@@ -179,10 +222,9 @@ public class PlayListManager
             {
                 escrever.println(str);
             }
-        }
-        catch (IOException ex)
+        } catch (IOException ex)
         {
-            Logger.getLogger(PlayListManager.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Erro no arquivo de playlists");
         }
     }
 
@@ -190,6 +232,6 @@ public class PlayListManager
     {
         String[] dados = linha.split(" | ");
 
-        return dados[0].equals(user.getLogin()) && dados[1].equals(user.getSenha());
+        return dados[0].equals(user.getLogin()) && dados[2].equals(user.getSenha());
     }
 }

@@ -28,6 +28,8 @@ public class TelaAdm extends javax.swing.JDialog
     private boolean playing;
     private java.awt.Frame parent;
     private UsuarioAdm user;
+    private String[] vazio ={};
+    private Thread t = new Thread((Runnable) this.campoMusica);
 
     public TelaAdm(java.awt.Frame parent, boolean modal, Usuario user)
     {
@@ -55,8 +57,18 @@ public class TelaAdm extends javax.swing.JDialog
         {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
+        
+        carregarPlaylists();
     }
 
+    private void carregarPlaylists()
+    {
+        for (PlayList p : this.user.getPlayLists())
+        {
+            this.comboBoxPlayList.addItem(p.getNome());
+        }
+    }
+    
     private TelaAdm(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
@@ -86,9 +98,6 @@ public class TelaAdm extends javax.swing.JDialog
 
     private void limparJLists()
     {
-        String[] vazio =
-        {
-        };
         atualizarListMusicas(vazio, this.listMusicas);
         atualizarListMusicas(vazio, this.listPlayListMusicas);
     }
@@ -323,6 +332,17 @@ public class TelaAdm extends javax.swing.JDialog
                 campoMusicaActionPerformed(evt);
             }
         });
+        campoMusica.addKeyListener(new java.awt.event.KeyAdapter()
+        {
+            public void keyPressed(java.awt.event.KeyEvent evt)
+            {
+                campoMusicaKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt)
+            {
+                campoMusicaKeyTyped(evt);
+            }
+        });
         panelPlayer.add(campoMusica, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 270, -1));
 
         botaoPlay.setText("Play");
@@ -378,6 +398,42 @@ public class TelaAdm extends javax.swing.JDialog
         panelPlayList.add(labelPlayLists, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 10, -1, -1));
 
         comboBoxPlayList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboBoxPlayList.addItemListener(new java.awt.event.ItemListener()
+        {
+            public void itemStateChanged(java.awt.event.ItemEvent evt)
+            {
+                comboBoxPlayListItemStateChanged(evt);
+            }
+        });
+        comboBoxPlayList.addMouseMotionListener(new java.awt.event.MouseMotionAdapter()
+        {
+            public void mouseMoved(java.awt.event.MouseEvent evt)
+            {
+                comboBoxPlayListMouseMoved(evt);
+            }
+        });
+        comboBoxPlayList.addFocusListener(new java.awt.event.FocusAdapter()
+        {
+            public void focusGained(java.awt.event.FocusEvent evt)
+            {
+                comboBoxPlayListFocusGained(evt);
+            }
+        });
+        comboBoxPlayList.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                comboBoxPlayListMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt)
+            {
+                comboBoxPlayListMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt)
+            {
+                comboBoxPlayListMouseExited(evt);
+            }
+        });
         comboBoxPlayList.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -555,7 +611,7 @@ public class TelaAdm extends javax.swing.JDialog
     }//GEN-LAST:event_campoMusicaFocusGained
 
     private void campoMusicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoMusicaActionPerformed
-
+        autoComplete();
     }//GEN-LAST:event_campoMusicaActionPerformed
 
     private void botaoCriarPlaylistActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoCriarPlaylistActionPerformed
@@ -581,8 +637,66 @@ public class TelaAdm extends javax.swing.JDialog
 
     private void comboBoxPlayListActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_comboBoxPlayListActionPerformed
     {//GEN-HEADEREND:event_comboBoxPlayListActionPerformed
-
+        
     }//GEN-LAST:event_comboBoxPlayListActionPerformed
+
+    private void comboBoxPlayListMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_comboBoxPlayListMouseClicked
+    {//GEN-HEADEREND:event_comboBoxPlayListMouseClicked
+        
+    }//GEN-LAST:event_comboBoxPlayListMouseClicked
+
+    private void comboBoxPlayListFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event_comboBoxPlayListFocusGained
+    {//GEN-HEADEREND:event_comboBoxPlayListFocusGained
+        
+    }//GEN-LAST:event_comboBoxPlayListFocusGained
+
+    private void comboBoxPlayListMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event_comboBoxPlayListMouseEntered
+    {//GEN-HEADEREND:event_comboBoxPlayListMouseEntered
+        atualizarListMusicas(vazio, this.listPlayListMusicas);
+        
+        StringBuilder sb = new StringBuilder();
+        for (String str : this.user.getPlayList(this.comboBoxPlayList.getSelectedIndex()).getMusicas())
+        {
+            sb.append(str);
+            sb.append("\n");
+        }
+       
+        atualizarListMusicas(sb.toString().split("\n"), this.listPlayListMusicas);
+    }//GEN-LAST:event_comboBoxPlayListMouseEntered
+
+    private void comboBoxPlayListMouseExited(java.awt.event.MouseEvent evt)//GEN-FIRST:event_comboBoxPlayListMouseExited
+    {//GEN-HEADEREND:event_comboBoxPlayListMouseExited
+       atualizarListMusicas(vazio, this.listPlayListMusicas);
+        
+        StringBuilder sb = new StringBuilder();
+        for (String str : this.user.getPlayList(this.comboBoxPlayList.getSelectedIndex()).getMusicas())
+        {
+            sb.append(str);
+            sb.append("\n");
+        }
+       
+        atualizarListMusicas(sb.toString().split("\n"), this.listPlayListMusicas);
+    }//GEN-LAST:event_comboBoxPlayListMouseExited
+
+    private void comboBoxPlayListMouseMoved(java.awt.event.MouseEvent evt)//GEN-FIRST:event_comboBoxPlayListMouseMoved
+    {//GEN-HEADEREND:event_comboBoxPlayListMouseMoved
+
+    }//GEN-LAST:event_comboBoxPlayListMouseMoved
+
+    private void comboBoxPlayListItemStateChanged(java.awt.event.ItemEvent evt)//GEN-FIRST:event_comboBoxPlayListItemStateChanged
+    {//GEN-HEADEREND:event_comboBoxPlayListItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboBoxPlayListItemStateChanged
+
+    private void campoMusicaKeyPressed(java.awt.event.KeyEvent evt)//GEN-FIRST:event_campoMusicaKeyPressed
+    {//GEN-HEADEREND:event_campoMusicaKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_campoMusicaKeyPressed
+
+    private void campoMusicaKeyTyped(java.awt.event.KeyEvent evt)//GEN-FIRST:event_campoMusicaKeyTyped
+    {//GEN-HEADEREND:event_campoMusicaKeyTyped
+        autoComplete();
+    }//GEN-LAST:event_campoMusicaKeyTyped
 
     public static void main(String args[])
     {

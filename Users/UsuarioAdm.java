@@ -30,4 +30,9 @@ public class UsuarioAdm extends Usuario
     {
         this.playLists.add(playlist);
     }
+    
+    public PlayList getPlayList(int index)
+    {
+        return this.playLists.get(index);
+    }
 }
