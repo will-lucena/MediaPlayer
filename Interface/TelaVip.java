@@ -2,8 +2,13 @@ package Interface;
 
 import App.FileChooser;
 import DataBase.DataBaseSongsSingleton;
+import DataBase.DataBaseUsersSingleton;
+import DataBase.PlayListManager;
+import DataBase.SongsManager;
+import DataBase.UsersManager;
 import Exceptions.BancoVazioException;
 import Exceptions.LoginIndisponivelException;
+import Exceptions.UsuarioNaoExisteException;
 import MediaPlayer.MediaPlayer;
 import Structs.PlayList;
 import Users.Usuario;
@@ -138,8 +143,6 @@ public class TelaVip extends javax.swing.JDialog
         this.comboBoxPlayList.removeAllItems();
         this.comboBoxTipoUser.removeAllItems();
         this.comboBoxTipoUser.addItem("Comum");
-        this.comboBoxTipoUser.addItem("Vip");
-        this.comboBoxTipoUser.addItem("Administrador");
     }
 
     private void addUsuarioComum(String nome, String login, String senha)
@@ -227,6 +230,13 @@ public class TelaVip extends javax.swing.JDialog
         botaoPlayList = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter()
+        {
+            public void windowClosed(java.awt.event.WindowEvent evt)
+            {
+                formWindowClosed(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -689,6 +699,22 @@ public class TelaVip extends javax.swing.JDialog
             this.botaoPlay.setEnabled(false);
         }
     }//GEN-LAST:event_botaoPlayListActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosed
+    {//GEN-HEADEREND:event_formWindowClosed
+        new PlayListManager().gerarPlayLists();
+        try
+        {
+            DataBaseUsersSingleton.getInstance().remover("admin");
+        } catch (UsuarioNaoExisteException ex)
+        {
+
+        }
+        new UsersManager().gerarDataBase();
+        new SongsManager().gerarDataBase();
+        dispose();
+        System.exit(0);
+    }//GEN-LAST:event_formWindowClosed
 
     /**
      * @param args the command line arguments

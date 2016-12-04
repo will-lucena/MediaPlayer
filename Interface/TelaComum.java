@@ -1,7 +1,12 @@
 package Interface;
 
 import App.FileChooser;
+import DataBase.DataBaseUsersSingleton;
+import DataBase.PlayListManager;
+import DataBase.SongsManager;
+import DataBase.UsersManager;
 import Exceptions.BancoVazioException;
+import Exceptions.UsuarioNaoExisteException;
 import MediaPlayer.MediaPlayer;
 import Users.Usuario;
 import Users.UsuarioComum;
@@ -95,6 +100,13 @@ public class TelaComum extends javax.swing.JDialog
         listMusicas = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter()
+        {
+            public void windowClosing(java.awt.event.WindowEvent evt)
+            {
+                formWindowClosing(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -284,6 +296,21 @@ public class TelaComum extends javax.swing.JDialog
             this.listMusicas.clearSelection();
         }
     }//GEN-LAST:event_botaoStopActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosing
+    {//GEN-HEADEREND:event_formWindowClosing
+        try
+        {
+            DataBaseUsersSingleton.getInstance().remover("admin");
+        } catch (UsuarioNaoExisteException ex)
+        {
+
+        }
+        new UsersManager().gerarDataBase();
+        new SongsManager().gerarDataBase();
+        dispose();
+        System.exit(0);
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
