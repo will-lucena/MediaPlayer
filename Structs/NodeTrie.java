@@ -5,7 +5,6 @@ import java.util.List;
 
 public class NodeTrie
 {
-
     private final char c;
     private final List<NodeTrie> filhos;
     private boolean isWord;

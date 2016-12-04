@@ -2,14 +2,13 @@ package Interface;
 
 import Exceptions.BancoVazioException;
 import Structs.PlayList;
-import Users.Usuario;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 public class TelaCriarPlayList extends javax.swing.JDialog
 {
 
-    private StringBuilder listDisponiveis;
+    private final StringBuilder listDisponiveis;
     private StringBuilder listSelecionadas;
     private PlayList playList;
 
@@ -171,9 +170,23 @@ public class TelaCriarPlayList extends javax.swing.JDialog
         getContentPane().add(BotaoFinalizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 290, -1, -1));
 
         BotaoCancelar.setText("Cancelar");
+        BotaoCancelar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                BotaoCancelarActionPerformed(evt);
+            }
+        });
         getContentPane().add(BotaoCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 290, -1, -1));
 
         botaoRemover.setText("Remover");
+        botaoRemover.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                botaoRemoverActionPerformed(evt);
+            }
+        });
         getContentPane().add(botaoRemover, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 290, -1, -1));
 
         pack();
@@ -184,6 +197,7 @@ public class TelaCriarPlayList extends javax.swing.JDialog
         if (!this.listMusicas.getSelectedValue().equals(""))
         {
             this.listSelecionadas.append(this.listMusicas.getSelectedValue());
+            this.listSelecionadas.append("\n");
             atualizarSelecionadas();
         }
     }//GEN-LAST:event_botaoAddActionPerformed
@@ -198,6 +212,22 @@ public class TelaCriarPlayList extends javax.swing.JDialog
         }
         this.setVisible(false);
     }//GEN-LAST:event_BotaoFinalizarActionPerformed
+
+    private void botaoRemoverActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoRemoverActionPerformed
+    {//GEN-HEADEREND:event_botaoRemoverActionPerformed
+        if (!this.listPlayList.getSelectedValue().equals(""))
+        {
+            String sb = this.listSelecionadas.toString().replace(this.listPlayList.getSelectedValue(), "");
+            this.listSelecionadas = new StringBuilder();
+            this.listSelecionadas.append(sb);
+            atualizarSelecionadas();
+        }
+    }//GEN-LAST:event_botaoRemoverActionPerformed
+
+    private void BotaoCancelarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_BotaoCancelarActionPerformed
+    {//GEN-HEADEREND:event_BotaoCancelarActionPerformed
+        dispose();
+    }//GEN-LAST:event_BotaoCancelarActionPerformed
 
     public static void main(String args[])
     {

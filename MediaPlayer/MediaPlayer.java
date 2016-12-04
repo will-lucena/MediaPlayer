@@ -17,6 +17,7 @@ public class MediaPlayer
     private int frame;
     private int musicLength;
     FileInputStream stream;
+    private boolean stoppped = false;
 
     public String getPath()
     {
@@ -26,6 +27,38 @@ public class MediaPlayer
     public void setPath(String path)
     {
         this.path = path;
+    }
+
+    public void tocarPlayList(String[] playlist)
+    {
+        for (String musica : playlist)
+        {
+            try
+            {
+                if (!this.stoppped)
+                {
+                    this.stream = new FileInputStream(musica);
+                    int tempo = this.stream.available();
+                    this.musicLength = this.stream.available();
+                    this.mediaPlayer = new Player(this.stream);
+                    this.mediaPlayer.play();
+                    while (tempo > 0)
+                    {
+                        tempo = this.stream.available();
+                    }
+                }
+            } catch (FileNotFoundException e1)
+            {
+                JOptionPane.showMessageDialog(null, "Erro ao ler o arquivo");
+            } catch (JavaLayerException e2)
+            {
+                JOptionPane.showMessageDialog(null, "Erro no player");
+            } catch (IOException e3)
+            {
+
+            }
+        }
+        this.stoppped = false;
     }
 
     public void tocar()
@@ -100,6 +133,7 @@ public class MediaPlayer
         this.mediaPlayer.close();
         this.frame = 0;
         this.path = "";
+        this.stoppped = true;
     }
 
     public Runnable createRunnable()
@@ -109,6 +143,18 @@ public class MediaPlayer
             public void run()
             {
                 tocar();
+            }
+        };
+        return runnable;
+    }
+
+    public Runnable createRunnable(String[] playlist)
+    {
+        Runnable runnable = new Runnable()
+        {
+            public void run()
+            {
+                tocarPlayList(playlist);
             }
         };
         return runnable;

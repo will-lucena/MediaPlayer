@@ -2,37 +2,31 @@ package Interface;
 
 import App.FileChooser;
 import DataBase.DataBaseSongsSingleton;
-import DataBase.DataBaseUsersSingleton;
-import DataBase.PlayListManager;
-import DataBase.SongsManager;
-import DataBase.UsersManager;
 import Exceptions.BancoVazioException;
 import Exceptions.LoginIndisponivelException;
-import Exceptions.UsuarioNaoExisteException;
 import MediaPlayer.MediaPlayer;
 import Structs.PlayList;
 import Users.Usuario;
 import Users.UsuarioAdm;
 import Users.UsuarioComum;
 import Users.UsuarioVip;
-import java.awt.Frame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 
-public class TelaAdm extends javax.swing.JDialog
+public class TelaVip extends javax.swing.JDialog
 {
 
     private final MediaPlayer player;
     private boolean pause;
     private boolean playing;
-    private final Frame parent;
-    private UsuarioAdm user;
+    private final java.awt.Frame parent;
+    private UsuarioVip user;
     private final String[] vazio =
     {
     };
     private Thread t;
 
-    public TelaAdm(Frame parent, boolean modal, Usuario user)
+    public TelaVip(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
         initComponents();
@@ -41,7 +35,25 @@ public class TelaAdm extends javax.swing.JDialog
         this.pause = false;
         this.playing = false;
         this.parent = parent;
-        this.user = (UsuarioAdm) user;
+        this.configComboBox();
+
+        limparJLists();
+        atualizarListaMusicas();
+        carregarPlaylists();
+
+        this.setTitle(user.getNome());
+    }
+
+    public TelaVip(java.awt.Frame parent, boolean modal, Usuario user)
+    {
+        super(parent, modal);
+        initComponents();
+
+        this.player = new MediaPlayer();
+        this.pause = false;
+        this.playing = false;
+        this.parent = parent;
+        this.user = (UsuarioVip) user;
         this.configComboBox();
 
         limparJLists();
@@ -80,22 +92,6 @@ public class TelaAdm extends javax.swing.JDialog
         {
             this.comboBoxPlayList.addItem(p.getNome());
         }
-    }
-
-    private TelaAdm(java.awt.Frame parent, boolean modal)
-    {
-        super(parent, modal);
-        initComponents();
-
-        this.player = new MediaPlayer();
-        this.pause = false;
-        this.playing = false;
-        this.parent = parent;
-        this.configComboBox();
-
-        limparJLists();
-        atualizarListaMusicas();
-        carregarPlaylists();
     }
 
     private void limparJLists()
@@ -202,6 +198,7 @@ public class TelaAdm extends javax.swing.JDialog
     private void initComponents()
     {
 
+        jPanel1 = new javax.swing.JPanel();
         panelCadastrar = new javax.swing.JPanel();
         labelNome = new javax.swing.JLabel();
         labelLogin = new javax.swing.JLabel();
@@ -212,11 +209,6 @@ public class TelaAdm extends javax.swing.JDialog
         botaoAdd = new javax.swing.JButton();
         labelCadastrar = new javax.swing.JLabel();
         campoSenha = new javax.swing.JPasswordField();
-        panelRemover = new javax.swing.JPanel();
-        labelRemover = new javax.swing.JLabel();
-        campoLoginRemover = new javax.swing.JTextField();
-        labelLoginRemover = new javax.swing.JLabel();
-        botaoRemover = new javax.swing.JButton();
         panelPlayer = new javax.swing.JPanel();
         botaoMusica = new javax.swing.JButton();
         campoMusica = new javax.swing.JTextField();
@@ -235,14 +227,9 @@ public class TelaAdm extends javax.swing.JDialog
         botaoPlayList = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter()
-        {
-            public void windowClosing(java.awt.event.WindowEvent evt)
-            {
-                formWindowClosing(evt);
-            }
-        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         panelCadastrar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         panelCadastrar.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -282,29 +269,7 @@ public class TelaAdm extends javax.swing.JDialog
         panelCadastrar.add(labelCadastrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, -1, -1));
         panelCadastrar.add(campoSenha, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 130, 120, -1));
 
-        getContentPane().add(panelCadastrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 200, 250));
-
-        panelRemover.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        panelRemover.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        labelRemover.setText("Remover Usuario");
-        panelRemover.add(labelRemover, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, -1, -1));
-        panelRemover.add(campoLoginRemover, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 50, 200, -1));
-
-        labelLoginRemover.setText("Login:");
-        panelRemover.add(labelLoginRemover, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, -1, -1));
-
-        botaoRemover.setText("Remover");
-        botaoRemover.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                botaoRemoverActionPerformed(evt);
-            }
-        });
-        panelRemover.add(botaoRemover, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 90, -1, -1));
-
-        getContentPane().add(panelRemover, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 10, 290, 140));
+        jPanel1.add(panelCadastrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 200, 250));
 
         panelPlayer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         panelPlayer.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -389,7 +354,7 @@ public class TelaAdm extends javax.swing.JDialog
 
         panelPlayer.add(panelListMusicas, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 270, 150));
 
-        getContentPane().add(panelPlayer, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 170, 290, 320));
+        jPanel1.add(panelPlayer, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 10, 290, 320));
 
         panelPlayList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         panelPlayList.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -457,8 +422,6 @@ public class TelaAdm extends javax.swing.JDialog
 
         panelPlayList.add(panelListPlayListMusicas, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 200, 230));
 
-        getContentPane().add(panelPlayList, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 10, 250, 340));
-
         botaoCriarPlaylist.setText("Criar Playlist");
         botaoCriarPlaylist.addActionListener(new java.awt.event.ActionListener()
         {
@@ -467,7 +430,7 @@ public class TelaAdm extends javax.swing.JDialog
                 botaoCriarPlaylistActionPerformed(evt);
             }
         });
-        getContentPane().add(botaoCriarPlaylist, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 420, -1, -1));
+        panelPlayList.add(botaoCriarPlaylist, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, -1, -1));
 
         botaoPlayList.setText("Reproduzir playlist");
         botaoPlayList.addActionListener(new java.awt.event.ActionListener()
@@ -477,123 +440,19 @@ public class TelaAdm extends javax.swing.JDialog
                 botaoPlayListActionPerformed(evt);
             }
         });
-        getContentPane().add(botaoPlayList, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 420, -1, -1));
+        panelPlayList.add(botaoPlayList, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 340, -1, -1));
+
+        jPanel1.add(panelPlayList, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 10, 250, 380));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 780, 400));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosing
-    {//GEN-HEADEREND:event_formWindowClosing
-        new PlayListManager().gerarPlayLists();
-        try
-        {
-            DataBaseUsersSingleton.getInstance().remover("admin");
-        } catch (UsuarioNaoExisteException ex)
-        {
+    private void comboBoxTipoUserActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_comboBoxTipoUserActionPerformed
+    {//GEN-HEADEREND:event_comboBoxTipoUserActionPerformed
 
-        }
-        new UsersManager().gerarDataBase();
-        new SongsManager().gerarDataBase();
-        dispose();
-        System.exit(0);
-    }//GEN-LAST:event_formWindowClosing
-
-    private void botaoStopActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoStopActionPerformed
-    {//GEN-HEADEREND:event_botaoStopActionPerformed
-        if (this.playing || this.pause)
-        {
-            t = null;
-            this.listMusicas.setEnabled(true);
-            this.botaoMusica.setEnabled(true);
-            this.botaoPlay.setEnabled(true);
-            this.botaoPlayList.setEnabled(true);
-            this.player.stop();
-            this.playing = false;
-            this.pause = false;
-            this.botaoPlay.setText("Play");
-            this.campoMusica.setText("");
-            this.listMusicas.clearSelection();
-        }
-    }//GEN-LAST:event_botaoStopActionPerformed
-
-    private void botaoPauseActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoPauseActionPerformed
-    {//GEN-HEADEREND:event_botaoPauseActionPerformed
-        if (this.playing)
-        {
-            this.pause = true;
-            this.playing = false;
-            this.player.pause();
-            this.botaoPlay.setText("Resume");
-            this.setTitle(user.getNome());
-            this.listMusicas.setEnabled(false);
-            this.botaoMusica.setEnabled(false);
-            this.botaoPlayList.setEnabled(false);
-        }
-    }//GEN-LAST:event_botaoPauseActionPerformed
-
-    private void botaoPlayActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoPlayActionPerformed
-    {//GEN-HEADEREND:event_botaoPlayActionPerformed
-        String path;
-        if (this.listMusicas.getSelectedValue() != null && !this.listMusicas.getSelectedValue().equals(""))
-        {
-            path = this.listMusicas.getSelectedValue();
-        }
-        else
-        {
-            path = this.campoMusica.getText();
-        }
-        if (!path.equals(""))
-        {
-            this.campoMusica.setText(path);
-            this.player.setPath(path);
-            this.listMusicas.clearSelection();
-        }
-
-        if (!this.playing)
-        {
-            this.playing = true;
-            this.pause = false;
-            t = new Thread(this.player.createRunnable());
-            t.start();
-            this.botaoPlay.setText("Play");
-            this.listMusicas.clearSelection();
-            this.listMusicas.setEnabled(false);
-            this.botaoMusica.setEnabled(false);
-            this.botaoPlayList.setEnabled(false);
-        }
-    }//GEN-LAST:event_botaoPlayActionPerformed
-
-    private void botaoMusicaActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoMusicaActionPerformed
-    {//GEN-HEADEREND:event_botaoMusicaActionPerformed
-        FileChooser chooser = new FileChooser();
-        String path = chooser.escolherArquivo("Escolha a musica");
-        if (!path.equals(""))
-        {
-            String musica = path;
-            DataBase.DataBaseSongsSingleton.getInstance().inserir(musica);
-            atualizarListaMusicas();
-        }
-        this.campoMusica.setText(path);
-        this.player.setPath(path);
-    }//GEN-LAST:event_botaoMusicaActionPerformed
-
-    private void botaoRemoverActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoRemoverActionPerformed
-    {//GEN-HEADEREND:event_botaoRemoverActionPerformed
-        if (!this.campoLoginRemover.getText().equals(""))
-        {
-            try
-            {
-                DataBase.DataBaseUsersSingleton.getInstance().remover(this.campoLoginRemover.getText());
-                JOptionPane.showMessageDialog(null, "Usuario removido com sucesso, login disponivel novamente para cadastro");
-            } catch (UsuarioNaoExisteException e1)
-            {
-                JOptionPane.showMessageDialog(null, "Login invalido");
-            } finally
-            {
-                this.campoLoginRemover.setText("");
-            }
-        }
-    }//GEN-LAST:event_botaoRemoverActionPerformed
+    }//GEN-LAST:event_comboBoxTipoUserActionPerformed
 
     private void botaoAddActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoAddActionPerformed
     {//GEN-HEADEREND:event_botaoAddActionPerformed
@@ -627,53 +486,114 @@ public class TelaAdm extends javax.swing.JDialog
         }
     }//GEN-LAST:event_botaoAddActionPerformed
 
-    private void comboBoxTipoUserActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_comboBoxTipoUserActionPerformed
-    {//GEN-HEADEREND:event_comboBoxTipoUserActionPerformed
+    private void botaoMusicaActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoMusicaActionPerformed
+    {//GEN-HEADEREND:event_botaoMusicaActionPerformed
+        FileChooser chooser = new FileChooser();
+        String path = chooser.escolherArquivo("Escolha a musica");
+        if (!path.equals(""))
+        {
+            String musica = path;
+            DataBase.DataBaseSongsSingleton.getInstance().inserir(musica);
+            atualizarListaMusicas();
+        }
+        this.campoMusica.setText(path);
+        this.player.setPath(path);
+    }//GEN-LAST:event_botaoMusicaActionPerformed
 
-    }//GEN-LAST:event_comboBoxTipoUserActionPerformed
-
-    private void campoMusicaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_campoMusicaFocusGained
+    private void campoMusicaFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event_campoMusicaFocusGained
+    {//GEN-HEADEREND:event_campoMusicaFocusGained
 
     }//GEN-LAST:event_campoMusicaFocusGained
 
-    private void campoMusicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoMusicaActionPerformed
-        autoComplete();
+    private void campoMusicaActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_campoMusicaActionPerformed
+    {//GEN-HEADEREND:event_campoMusicaActionPerformed
+
     }//GEN-LAST:event_campoMusicaActionPerformed
 
-    private void botaoCriarPlaylistActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoCriarPlaylistActionPerformed
-    {//GEN-HEADEREND:event_botaoCriarPlaylistActionPerformed
-        TelaCriarPlayList tela = new TelaCriarPlayList(parent, true);
-        tela.setVisible(true);
-        while (tela.isVisible())
+    private void campoMusicaKeyPressed(java.awt.event.KeyEvent evt)//GEN-FIRST:event_campoMusicaKeyPressed
+    {//GEN-HEADEREND:event_campoMusicaKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_campoMusicaKeyPressed
+
+    private void campoMusicaKeyTyped(java.awt.event.KeyEvent evt)//GEN-FIRST:event_campoMusicaKeyTyped
+    {//GEN-HEADEREND:event_campoMusicaKeyTyped
+
+    }//GEN-LAST:event_campoMusicaKeyTyped
+
+    private void botaoPlayActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoPlayActionPerformed
+    {//GEN-HEADEREND:event_botaoPlayActionPerformed
+        String path;
+        if (this.listMusicas.getSelectedValue() != null && !this.listMusicas.getSelectedValue().equals(""))
         {
-
+            path = this.listMusicas.getSelectedValue();
         }
-        if (tela.getPlayList() != null && tela.getPlayList().getMusicas().size() > 0)
+        else
         {
-            this.user.addPlayList(tela.getPlayList());
-            this.comboBoxPlayList.addItem(tela.getPlayList().getNome());
-
-            StringBuilder sb = new StringBuilder();
-            for (String str : tela.getPlayList().getMusicas())
-            {
-                sb.append(str);
-                //sb.append(str.substring(str.lastIndexOf("\\") + 1, str.lastIndexOf(".")));
-                sb.append("\n");
-            }
-            String[] list = sb.toString().split("\n");
-            atualizarJList(list, this.listPlayListMusicas);
+            path = this.campoMusica.getText();
         }
-    }//GEN-LAST:event_botaoCriarPlaylistActionPerformed
+        if (!path.equals(""))
+        {
+            this.campoMusica.setText(path);
+            this.player.setPath(path);
+            this.listMusicas.clearSelection();
+        }
 
-    private void comboBoxPlayListActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_comboBoxPlayListActionPerformed
-    {//GEN-HEADEREND:event_comboBoxPlayListActionPerformed
+        if (!this.playing)
+        {
+            this.playing = true;
+            this.pause = false;
+            t = new Thread(this.player.createRunnable());
+            t.start();
+            this.botaoPlay.setText("Play");
+            this.listMusicas.clearSelection();
+            this.listMusicas.setEnabled(false);
+            this.botaoMusica.setEnabled(false);
+            this.botaoPlayList.setEnabled(false);
+        }
+    }//GEN-LAST:event_botaoPlayActionPerformed
 
-    }//GEN-LAST:event_comboBoxPlayListActionPerformed
+    private void botaoPauseActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoPauseActionPerformed
+    {//GEN-HEADEREND:event_botaoPauseActionPerformed
+        if (this.playing)
+        {
+            this.pause = true;
+            this.playing = false;
+            this.player.pause();
+            this.botaoPlay.setText("Resume");
+            this.setTitle(user.getNome());
+            this.listMusicas.setEnabled(false);
+            this.botaoMusica.setEnabled(false);
+            this.botaoPlayList.setEnabled(false);
+        }
+    }//GEN-LAST:event_botaoPauseActionPerformed
 
-    private void comboBoxPlayListMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_comboBoxPlayListMouseClicked
-    {//GEN-HEADEREND:event_comboBoxPlayListMouseClicked
+    private void botaoStopActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoStopActionPerformed
+    {//GEN-HEADEREND:event_botaoStopActionPerformed
+        if (this.playing || this.pause)
+        {
+            t = null;
+            this.listMusicas.setEnabled(true);
+            this.botaoMusica.setEnabled(true);
+            this.botaoPlay.setEnabled(true);
+            this.botaoPlayList.setEnabled(true);
+            this.player.stop();
+            this.playing = false;
+            this.pause = false;
+            this.botaoPlay.setText("Play");
+            this.campoMusica.setText("");
+            this.listMusicas.clearSelection();
+        }
+    }//GEN-LAST:event_botaoStopActionPerformed
 
-    }//GEN-LAST:event_comboBoxPlayListMouseClicked
+    private void comboBoxPlayListItemStateChanged(java.awt.event.ItemEvent evt)//GEN-FIRST:event_comboBoxPlayListItemStateChanged
+    {//GEN-HEADEREND:event_comboBoxPlayListItemStateChanged
+
+    }//GEN-LAST:event_comboBoxPlayListItemStateChanged
+
+    private void comboBoxPlayListMouseMoved(java.awt.event.MouseEvent evt)//GEN-FIRST:event_comboBoxPlayListMouseMoved
+    {//GEN-HEADEREND:event_comboBoxPlayListMouseMoved
+
+    }//GEN-LAST:event_comboBoxPlayListMouseMoved
 
     private void comboBoxPlayListFocusGained(java.awt.event.FocusEvent evt)//GEN-FIRST:event_comboBoxPlayListFocusGained
     {//GEN-HEADEREND:event_comboBoxPlayListFocusGained
@@ -689,6 +609,26 @@ public class TelaAdm extends javax.swing.JDialog
         atualizarJList(sb.toString().split("\n"), this.listPlayListMusicas);
     }//GEN-LAST:event_comboBoxPlayListFocusGained
 
+    private void comboBoxPlayListFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event_comboBoxPlayListFocusLost
+    {//GEN-HEADEREND:event_comboBoxPlayListFocusLost
+        atualizarJList(vazio, this.listPlayListMusicas);
+
+        StringBuilder sb = new StringBuilder();
+        for (String str : this.user.getPlayList(this.comboBoxPlayList.getSelectedIndex()).getMusicas())
+        {
+            sb.append(str);
+            //sb.append(str.substring(str.lastIndexOf("\\") + 1, str.lastIndexOf(".")));
+            sb.append("\n");
+        }
+
+        atualizarJList(sb.toString().split("\n"), this.listPlayListMusicas);
+    }//GEN-LAST:event_comboBoxPlayListFocusLost
+
+    private void comboBoxPlayListMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_comboBoxPlayListMouseClicked
+    {//GEN-HEADEREND:event_comboBoxPlayListMouseClicked
+
+    }//GEN-LAST:event_comboBoxPlayListMouseClicked
+
     private void comboBoxPlayListMouseEntered(java.awt.event.MouseEvent evt)//GEN-FIRST:event_comboBoxPlayListMouseEntered
     {//GEN-HEADEREND:event_comboBoxPlayListMouseEntered
 
@@ -699,25 +639,32 @@ public class TelaAdm extends javax.swing.JDialog
 
     }//GEN-LAST:event_comboBoxPlayListMouseExited
 
-    private void comboBoxPlayListMouseMoved(java.awt.event.MouseEvent evt)//GEN-FIRST:event_comboBoxPlayListMouseMoved
-    {//GEN-HEADEREND:event_comboBoxPlayListMouseMoved
+    private void comboBoxPlayListActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_comboBoxPlayListActionPerformed
+    {//GEN-HEADEREND:event_comboBoxPlayListActionPerformed
 
-    }//GEN-LAST:event_comboBoxPlayListMouseMoved
+    }//GEN-LAST:event_comboBoxPlayListActionPerformed
 
-    private void comboBoxPlayListItemStateChanged(java.awt.event.ItemEvent evt)//GEN-FIRST:event_comboBoxPlayListItemStateChanged
-    {//GEN-HEADEREND:event_comboBoxPlayListItemStateChanged
+    private void botaoCriarPlaylistActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoCriarPlaylistActionPerformed
+    {//GEN-HEADEREND:event_botaoCriarPlaylistActionPerformed
+        TelaCriarPlayList tela = new TelaCriarPlayList(parent, true);
+        tela.setVisible(true);
+        while (tela.isVisible())
+        {
 
-    }//GEN-LAST:event_comboBoxPlayListItemStateChanged
+        }
+        this.user.addPlayList(tela.getPlayList());
+        this.comboBoxPlayList.addItem(tela.getPlayList().getNome());
 
-    private void campoMusicaKeyPressed(java.awt.event.KeyEvent evt)//GEN-FIRST:event_campoMusicaKeyPressed
-    {//GEN-HEADEREND:event_campoMusicaKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_campoMusicaKeyPressed
-
-    private void campoMusicaKeyTyped(java.awt.event.KeyEvent evt)//GEN-FIRST:event_campoMusicaKeyTyped
-    {//GEN-HEADEREND:event_campoMusicaKeyTyped
-        autoComplete();
-    }//GEN-LAST:event_campoMusicaKeyTyped
+        StringBuilder sb = new StringBuilder();
+        for (String str : tela.getPlayList().getMusicas())
+        {
+            sb.append(str);
+            //sb.append(str.substring(str.lastIndexOf("\\") + 1, str.lastIndexOf(".")));
+            sb.append("\n");
+        }
+        String[] list = sb.toString().split("\n");
+        atualizarJList(list, this.listPlayListMusicas);
+    }//GEN-LAST:event_botaoCriarPlaylistActionPerformed
 
     private void botaoPlayListActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_botaoPlayListActionPerformed
     {//GEN-HEADEREND:event_botaoPlayListActionPerformed
@@ -743,28 +690,47 @@ public class TelaAdm extends javax.swing.JDialog
         }
     }//GEN-LAST:event_botaoPlayListActionPerformed
 
-    private void comboBoxPlayListFocusLost(java.awt.event.FocusEvent evt)//GEN-FIRST:event_comboBoxPlayListFocusLost
-    {//GEN-HEADEREND:event_comboBoxPlayListFocusLost
-        atualizarJList(vazio, this.listPlayListMusicas);
-
-        StringBuilder sb = new StringBuilder();
-        for (String str : this.user.getPlayList(this.comboBoxPlayList.getSelectedIndex()).getMusicas())
-        {
-            sb.append(str);
-            //sb.append(str.substring(str.lastIndexOf("\\") + 1, str.lastIndexOf(".")));
-            sb.append("\n");
-        }
-
-        atualizarJList(sb.toString().split("\n"), this.listPlayListMusicas);
-    }//GEN-LAST:event_comboBoxPlayListFocusLost
-
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String args[])
     {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try
+        {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
+            {
+                if ("Nimbus".equals(info.getName()))
+                {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex)
+        {
+            java.util.logging.Logger.getLogger(TelaVip.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex)
+        {
+            java.util.logging.Logger.getLogger(TelaVip.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex)
+        {
+            java.util.logging.Logger.getLogger(TelaVip.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex)
+        {
+            java.util.logging.Logger.getLogger(TelaVip.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable()
         {
             public void run()
             {
-                TelaAdm dialog = new TelaAdm(new javax.swing.JFrame(), true);
+                TelaVip dialog = new TelaVip(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter()
                 {
                     @Override
@@ -785,22 +751,19 @@ public class TelaAdm extends javax.swing.JDialog
     private javax.swing.JButton botaoPause;
     private javax.swing.JButton botaoPlay;
     private javax.swing.JButton botaoPlayList;
-    private javax.swing.JButton botaoRemover;
     private javax.swing.JButton botaoStop;
     private javax.swing.JTextField campoLogin;
-    private javax.swing.JTextField campoLoginRemover;
     private javax.swing.JTextField campoMusica;
     private javax.swing.JTextField campoNome;
     private javax.swing.JPasswordField campoSenha;
     private javax.swing.JComboBox<String> comboBoxPlayList;
     private javax.swing.JComboBox<String> comboBoxTipoUser;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel labelCadastrar;
     private javax.swing.JLabel labelLogin;
-    private javax.swing.JLabel labelLoginRemover;
     private javax.swing.JLabel labelNome;
     private javax.swing.JLabel labelPlayLists;
     private javax.swing.JLabel labelPlayer;
-    private javax.swing.JLabel labelRemover;
     private javax.swing.JLabel labelSenha;
     private javax.swing.JList<String> listMusicas;
     private javax.swing.JList<String> listPlayListMusicas;
@@ -809,6 +772,5 @@ public class TelaAdm extends javax.swing.JDialog
     private javax.swing.JScrollPane panelListPlayListMusicas;
     private javax.swing.JPanel panelPlayList;
     private javax.swing.JPanel panelPlayer;
-    private javax.swing.JPanel panelRemover;
     // End of variables declaration//GEN-END:variables
 }

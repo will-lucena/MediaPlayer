@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import DataBase.DataBaseUsersSingleton;
-import DataBase.PlayListManager;
 import DataBase.UsersManager;
 import Exceptions.LoginIndisponivelException;
 import Users.Usuario;
@@ -28,14 +27,5 @@ public class TestManager
         DataBaseUsersSingleton.getInstance().inserir(user2);
 
         assertEquals(true, new UsersManager().gerarDataBase());
-    }
-
-    @Test
-    public void testEscritaPlayList()
-    {
-        Usuario user = new UsuarioVip("Will", "will", "123");
-        UsuarioVip vip = (UsuarioVip) user;
-
-        vip.criarPlayList();
     }
 }

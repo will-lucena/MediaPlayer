@@ -12,9 +12,6 @@ import Users.UsuarioAdm;
 import Users.UsuarioVip;
 import java.io.FileNotFoundException;
 import javax.swing.JOptionPane;
-import Structs.Abb;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class PlayListManager
 {

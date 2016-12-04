@@ -26,15 +26,9 @@ public class UsuarioVip extends Usuario
     {
         this.playLists.add(playlist);
     }
-
-    public PlayList criarPlayList()
+    
+    public PlayList getPlayList(int index)
     {
-        PlayList playlist = new PlayList();
-
-        String str = new FileChooser().escolherArquivo("Selecione a musica");
-
-        playlist.addMusica(str);
-        playLists.add(playlist);
-        return playlist;
+        return this.playLists.get(index);
     }
 }

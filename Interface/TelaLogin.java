@@ -1,6 +1,5 @@
 package Interface;
 
-import DataBase.DataBaseSingleton;
 import DataBase.DataBaseUsersSingleton;
 import DataBase.PlayListManager;
 import DataBase.SongsManager;
